@@ -98,7 +98,7 @@ module "dev" {
     ami           = data.aws_ami.ubuntu.id
     # key_name      = local.key_name
     root_block_device = [{
-      volume_size = 15
+      volume_size = 10
     }]
   }
 
