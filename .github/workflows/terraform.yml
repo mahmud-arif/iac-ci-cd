@@ -1,0 +1,44 @@
+name: Terraform Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - staging
+      - main
+    paths-ignore:
+      - '.github/workflows/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write      # Required for OIDC authentication
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.7.4
+
+      - name: Terraform Init
+        run: terraform init 
+
+      - name: Terraform Plan
+        run: terraform plan 
+
+    #   - name: Terraform Apply
+    #     if: github.ref == 'main' || github.ref == 'staging'
+    #     run: terraform apply -auto-approve -var-file=${{ github.ref_name }}.tfvars
+
