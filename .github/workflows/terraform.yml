@@ -32,11 +32,26 @@ jobs:
         with:
           terraform_version: 1.7.4
 
-      - name: Terraform Init
-        run: terraform init 
+      - name: Set environment path
+        id: env_path
+        run: |
+            if [[ "${{ github.ref_name }}" == "dev" ]]; then
+                echo "env_path=environment/dev/" >> $GITHUB_ENV
+            elif [[ "${{ github.ref_name }}" == "prod" || "${{ github.ref_name }}" == "main" ]]; then
+                echo "env_path=environment/prod/" >> $GITHUB_ENV
+            else
+                echo "Unknown branch"
+                exit 1
+        
+      - name: Initialize Terraform
+        run: |
+            cd ${{ env.env_path }}
+            terraform init 
 
       - name: Terraform Plan
-        run: terraform plan 
+        run: |
+          cd ${{ env.env_path }}
+          terraform plan 
 
     #   - name: Terraform Apply
     #     if: github.ref == 'main' || github.ref == 'staging'
