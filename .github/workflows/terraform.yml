@@ -46,6 +46,7 @@ jobs:
       - name: Initialize Terraform
         run: |
             cd ${{ env.env_path }}
+            ls -la 
             terraform init 
 
       - name: Terraform Plan
