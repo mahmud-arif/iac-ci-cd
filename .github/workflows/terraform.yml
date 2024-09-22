@@ -36,15 +36,18 @@ jobs:
         id: env_path
         run: |
             if [[ "${{ github.ref_name }}" == "dev" ]]; then
-                echo "env_path=environment/dev" >> $GITHUB_ENV
-            elif [[ "${{ github.ref_name }}" == "prod" || "${{ github.ref_name }}" == "main" ]]; then
-                echo "env_path=environment/prod" >> $GITHUB_ENV
+            echo "env_path=environment/dev/" >> $GITHUB_ENV
+            elif [[ "${{ github.ref_name }}" == "stage" ]]; then
+                echo "env_path=environment/stage/" >> $GITHUB_ENV
+            elif [[ "${{ github.ref_name }}" == "main" ]]; then
+                echo "env_path=environment/prod/" >> $GITHUB_ENV
             else
                 echo "Unknown branch"
                 exit 1
         
       - name: Initialize Terraform
         run: |
+            echo "Environment path is: ${{ env.env_path }}"
             cd ${{ env.env_path }}
             ls -la 
             terraform init 
