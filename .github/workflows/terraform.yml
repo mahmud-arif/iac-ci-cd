@@ -128,6 +128,11 @@ jobs:
     runs-on: ubuntu-latest
     if: inputs.action == 'destroy' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')
 
+    permissions:
+      id-token: write
+      contents: read
+      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -146,7 +151,7 @@ jobs:
   
 
       - name: Configure AWS Credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
           aws-region: us-east-1
