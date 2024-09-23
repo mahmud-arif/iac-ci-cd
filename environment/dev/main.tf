@@ -23,7 +23,7 @@ terraform {
     bucket         = "my-iac-states"
     key            = "dev/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "dev"
+    # dynamodb_table = "dev"
     # encrypt        = true
   }
 }
