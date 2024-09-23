@@ -66,7 +66,7 @@ jobs:
       - name: Terraform Plan
         run: |
           cd ${{ env.env_path }}
-          terraform plan -var-file=${{ github.ref_name }}.tfvars
+          terraform plan 
 
       - name: Terraform Apply (for dev and staging)
         if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
@@ -115,7 +115,7 @@ jobs:
         if: inputs.action == 'apply'
         run: |
           cd environment/prod
-          terraform apply -auto-approve -var-file=prod.tfvars
+          terraform apply -auto-approve 
 
       - name: Terraform Destroy for Prod
         if: inputs.action == 'destroy'
