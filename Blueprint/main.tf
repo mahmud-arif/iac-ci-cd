@@ -102,7 +102,7 @@ module "eks_cluster" {
 
   eks_managed_node_groups = var.eks_managed_node_groups
 
-  # fargate_profiles = var.fargate_profiles
+  ## fargate_profiles = var.fargate_profiles
 
   # map_users = var.map_users
 
@@ -148,36 +148,36 @@ module "eks_blueprints_addons" {
 
 
   # Add-ons
-  enable_metrics_server = true
-  enable_vpa            = true
+  # enable_metrics_server = true
+  # enable_vpa            = true
   # enable_aws_efs_csi_driver           = true
   # enable_aws_for_fluentbit            = true
-  enable_aws_load_balancer_controller        = true
-  enable_cluster_autoscaler                  = true
-  enable_karpenter                           = true
-  karpenter_enable_instance_profile_creation = true
+  # enable_aws_load_balancer_controller        = true
+  # enable_cluster_autoscaler                  = true
+  # enable_karpenter                           = true
+  # karpenter_enable_instance_profile_creation = true
   # # ECR login required
-  karpenter = {
-    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-    repository_password = data.aws_ecrpublic_authorization_token.token.password
-  }
+  # karpenter = {
+  #   repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+  #   repository_password = data.aws_ecrpublic_authorization_token.token.password
+  # }
   ## enable only for self managed node groups
   # enable_aws_node_termination_handler = true
   # aws_node_termination_handler_asg_arns = [
   # for asg in module.eks_cluster.self_managed_node_groups : asg.autoscaling_group_arn]
   # Wait for all Cert-manager related resources to be ready
 
-  enable_external_dns = true
-  external_dns_route53_zone_arns = [
-    "arn:aws:route53:::hostedzone/*",
-  ]
+  # enable_external_dns = true
+  # external_dns_route53_zone_arns = [
+  #   "arn:aws:route53:::hostedzone/*",
+  # ]
 
-  enable_cert_manager = true
-  cert_manager = {
-    wait = true
-  }
-  enable_ingress_nginx = true
-  enable_argocd        = true
+  # enable_cert_manager = true
+  # cert_manager = {
+  #   wait = true
+  # }
+  # enable_ingress_nginx = true
+  # enable_argocd        = true
   # argocd = {
   #   set = [
   #     {
@@ -187,8 +187,8 @@ module "eks_blueprints_addons" {
   #   ]
 
   # }
-  enable_argo_rollouts  = true
-  enable_argo_workflows = true
+  # enable_argo_rollouts  = true
+  # enable_argo_workflows = true
 
 }
 
