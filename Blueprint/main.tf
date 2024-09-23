@@ -59,7 +59,14 @@ module "eks_cluster" {
 
   enable_cluster_creator_admin_permissions = true
   cluster_endpoint_public_access           = var.cluster_endpoint_public_access
-
+  
+  map_roles = [
+  {
+    rolearn  = "arn:aws:iam::058264357476:role/AdministratorAccess-Role"
+    username = "devopsadmin"
+    groups   = ["system:masters"]
+  }
+]
 
   eks_managed_node_groups = var.eks_managed_node_groups
 
