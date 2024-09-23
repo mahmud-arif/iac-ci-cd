@@ -61,7 +61,7 @@ module "eks_cluster" {
   cluster_endpoint_public_access           = var.cluster_endpoint_public_access
 
 
-  # eks_managed_node_groups = var.eks_managed_node_groups
+  eks_managed_node_groups = var.eks_managed_node_groups
 
 }
 
@@ -82,14 +82,14 @@ module "eks_blueprints_addons" {
   # EKS Managed Add-ons
   eks_addons = {
     
-    # coredns = {
-    #   most_recent = true
+    coredns = {
+      most_recent = true
       
-    #   timeouts = {
-    #     create = "25m"
-    #     delete = "10m"
-    #   }
-    # }
+      timeouts = {
+        create = "25m"
+        delete = "10m"
+      }
+    }
     vpc-cni = {
       most_recent = true
      
