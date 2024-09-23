@@ -41,7 +41,7 @@ provider "aws" {
 locals {
   project_name = "kartat"
   # key_name     = "terraform-iqdx"
-  environment = "dev-test-"
+  environment = "dev-t-"
   common_tags = {
     environment = local.environment
     Name        = local.project_name
@@ -126,9 +126,9 @@ module "dev" {
   # }
   eks_managed_node_groups = {
     dev = {
-      min_size     = 1
+      min_size     = 2
       max_size     = 3
-      desired_size = 1
+      desired_size = 2
 
       instance_type = ["t3.medium"]
     }

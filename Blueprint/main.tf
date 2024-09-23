@@ -99,6 +99,10 @@ module "eks_blueprints_addons" {
       
     } 
   }
+   depends_on = [
+    module.eks_cluster,
+    module.eks_cluster.eks_managed_node_groups
+  ]
 }
 
 
