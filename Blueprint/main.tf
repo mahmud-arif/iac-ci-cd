@@ -133,7 +133,7 @@ module "eks_blueprints_addons" {
     # }
     coredns = {
       most_recent = true
-      service_account_role_arn = module.coredns_irsa.role_arn
+      service_account_role_arn = module.coredns_irsa.iam_role_arn
 
       timeouts = {
         create = "25m"
@@ -142,11 +142,11 @@ module "eks_blueprints_addons" {
     }
     vpc-cni = {
       most_recent = true
-      service_account_role_arn = module.vpc_cni_irsa.role_arn
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     }
     kube-proxy = {
       most_recent              = true
-      service_account_role_arn = module.kube_proxy_irsa.role_arn
+      service_account_role_arn = module.kube_proxy_irsa.iam_role_arn
     }
     # adot = {
     #   most_recent              = true
@@ -216,9 +216,10 @@ module "vpc_cni_irsa" {
     }
   }
 
-  role_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  ]
+  role_policy_arns = {
+    VPC_CNI_Policy = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  }
+    
 
   tags = var.tags
 }
@@ -235,9 +236,9 @@ module "kube_proxy_irsa" {
     }
   }
 
-  role_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonEKS_KubeProxy_Policy"
-  ]
+  role_policy_arns = {
+    Kube_Proxy_Policy = "arn:aws:iam::aws:policy/AmazonEKS_KubeProxy_Policy"
+  } 
 
   tags = var.tags
 }
@@ -255,9 +256,9 @@ module "coredns_irsa" {
     }
   }
 
-  role_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonEKS_CoreDNS_Policy"
-  ]
+  role_policy_arns = {
+    CoreDNS_Policy = "arn:aws:iam::aws:policy/AmazonEKS_CoreDNS_Policy"
+  } 
 
   tags = var.tags
 }
