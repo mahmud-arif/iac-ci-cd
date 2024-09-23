@@ -142,11 +142,10 @@ module "eks_blueprints_addons" {
     # }
     vpc-cni = {
       most_recent = true
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     }
     kube-proxy = {
       most_recent              = true
-      service_account_role_arn = module.kube_proxy_irsa.iam_role_arn
+      
     }
     # adot = {
     #   most_recent              = true
@@ -202,66 +201,6 @@ module "eks_blueprints_addons" {
 
 
 
-module "vpc_cni_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-
-
-  # oidc_provider_arn = module.eks_cluster.oidc_provider_arn
-  role_name         = "${var.cluster_name}-vpc-cni-irsa"
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks_cluster.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:vpc-cni-sa"]
-    }
-  }
-
-  role_policy_arns = {
-    VPC_CNI_Policy = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  }
-    
-
-  tags = var.common_tags
-}
-
-module "kube_proxy_irsa" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-
-  role_name         = "${var.cluster_name}-kube-proxy-irsa"
-  
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks_cluster.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:kube-proxy-sa"]
-    }
-  }
-
-  role_policy_arns = {
-    Kube_Proxy_Policy = "arn:aws:iam::aws:policy/AmazonEKS_KubeProxy_Policy"
-  } 
-
-  tags = var.common_tags
-}
-
-
-# module "coredns_irsa" {
-#   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-#   role_name         = "${var.cluster_name}-coredns-irsa"
-
-
-#   oidc_providers = {
-#     main = {
-#       provider_arn               = module.eks_cluster.oidc_provider_arn
-#       namespace_service_accounts = ["kube-system:coredns-sa"]
-#     }
-#   }
-
-#   role_policy_arns = {
-#     CoreDNS_Policy = "arn:aws:iam::aws:policy/AmazonEKS_CoreDNS_Policy"
-#   } 
-
-#   tags = var.common_tags
-# }
 
 
 
