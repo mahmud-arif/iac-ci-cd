@@ -1,7 +1,7 @@
 name: Terraform Deploy
 
 on:
-  workflow_dispatch:  # Manually triggered workflow
+  workflow_dispatch:
     inputs:
       action:
         description: 'Choose action (apply/destroy)'
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write      # Required for OIDC authentication
+      id-token: write
       contents: read
 
     steps:
@@ -72,28 +72,53 @@ jobs:
         if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
         run: |
           cd ${{ env.env_path }}
-          terraform apply -auto-approve -var-file=${{ github.ref_name }}.tfvars
-
-      - name: Wait for manual approval (prod)
-        if: github.ref == 'refs/heads/prod' && inputs.action == 'apply'
-        uses: hmarr/auto-approve-action@v1
-        with:
-          approval_required: true
-
-      - name: Terraform Apply (for prod)
-        if: github.ref == 'refs/heads/prod' && inputs.action == 'apply'
+          terraform apply -auto-approve 
+      - name: Terraform Destroy (for dev and staging)
+        if: inputs.action == 'destroy' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')
         run: |
           cd ${{ env.env_path }}
-          terraform apply -auto-approve -var-file=${{ github.ref_name }}.tfvars
+          terraform destroy -auto-approve
 
-      - name: Wait for manual approval for destroy (prod)
-        if: github.ref == 'refs/heads/prod' && inputs.action == 'destroy'
-        uses: hmarr/auto-approve-action@v1
+  # Separate job for prod, requiring manual approval
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment:
+      name: prod  # This enables manual approval for the 'prod' environment
+    if: github.ref == 'refs/heads/prod'
+    needs: terraform
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          approval_required: true
+          role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
+          aws-region: us-east-1
 
-      - name: Terraform Destroy (for all environments)
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.7.4
+
+      - name: Initialize Terraform for Prod
+        run: |
+          cd environment/prod
+          terraform init -backend-config="bucket=my-iac-states" -backend-config="key=prod/terraform.tfstate"
+
+      - name: Terraform Apply for Prod
+        if: inputs.action == 'apply'
+        run: |
+          cd environment/prod
+          terraform apply -auto-approve -var-file=prod.tfvars
+
+      - name: Terraform Destroy for Prod
         if: inputs.action == 'destroy'
         run: |
-          cd ${{ env.env_path }}
+          cd environment/prod
           terraform destroy -auto-approve 
