@@ -113,6 +113,9 @@ module "eks_cluster" {
 
 
 
+
+
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.16.3"
@@ -130,6 +133,7 @@ module "eks_blueprints_addons" {
     # }
     coredns = {
       most_recent = true
+      service_account_role_arn = module.coredns_irsa.role_arn
 
       timeouts = {
         create = "25m"
@@ -138,8 +142,12 @@ module "eks_blueprints_addons" {
     }
     vpc-cni = {
       most_recent = true
+      service_account_role_arn = module.vpc_cni_irsa.role_arn
     }
-    kube-proxy = {}
+    kube-proxy = {
+      most_recent              = true
+      service_account_role_arn = module.kube_proxy_irsa.role_arn
+    }
     # adot = {
     #   most_recent              = true
     #   service_account_role_arn = module.adot_irsa.iam_role_arn
@@ -191,6 +199,52 @@ module "eks_blueprints_addons" {
   # enable_argo_workflows = true
 
 }
+
+
+
+module "vpc_cni_irsa" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+
+  create_oidc_role = true
+  oidc_provider_arn = module.eks_cluster.oidc_provider_arn
+  role_name         = "${var.cluster_name}-vpc-cni-irsa"
+
+  role_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  ]
+
+  tags = var.tags
+}
+
+module "kube_proxy_irsa" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+
+  create_oidc_role = true
+  oidc_provider_arn = module.eks_cluster.oidc_provider_arn
+  role_name         = "${var.cluster_name}-kube-proxy-irsa"
+
+  role_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonEKS_KubeProxy_Policy"
+  ]
+
+  tags = var.tags
+}
+
+
+module "coredns_irsa" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+
+  create_oidc_role = true
+  oidc_provider_arn = module.eks_cluster.oidc_provider_arn
+  role_name         = "${var.cluster_name}-coredns-irsa"
+
+  role_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonEKS_CoreDNS_Policy"
+  ]
+
+  tags = var.tags
+}
+
 
 
 
