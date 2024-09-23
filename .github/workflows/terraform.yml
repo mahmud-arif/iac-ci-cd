@@ -127,7 +127,6 @@ jobs:
   destroy-dev-staging:
     runs-on: ubuntu-latest
     if: inputs.action == 'destroy' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')
-    needs: terraform
 
     steps:
       - name: Checkout code
