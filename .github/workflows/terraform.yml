@@ -22,6 +22,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')) || (github.event_name == 'workflow_dispatch' && inputs.action == 'apply')
 
     permissions:
       id-token: write
