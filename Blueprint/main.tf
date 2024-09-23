@@ -212,7 +212,7 @@ module "vpc_cni_irsa" {
   oidc_providers = {
     main = {
       provider_arn               = module.eks_cluster.oidc_provider_arn
-      
+      namespace_service_accounts = ["kube-system:vpc-cni-sa"]
     }
   }
 
@@ -232,7 +232,7 @@ module "kube_proxy_irsa" {
   oidc_providers = {
     main = {
       provider_arn               = module.eks_cluster.oidc_provider_arn
-      
+      namespace_service_accounts = ["kube-system:kube-proxy-sa"]
     }
   }
 
@@ -252,7 +252,7 @@ module "coredns_irsa" {
   oidc_providers = {
     main = {
       provider_arn               = module.eks_cluster.oidc_provider_arn
-      
+      namespace_service_accounts = ["kube-system:coredns-sa"]
     }
   }
 
