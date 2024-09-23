@@ -131,15 +131,15 @@ module "eks_blueprints_addons" {
     #   most_recent              = true
     #   service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
     # }
-    coredns = {
-      most_recent = true
-      service_account_role_arn = module.coredns_irsa.iam_role_arn
+    # coredns = {
+    #   most_recent = true
+    #   service_account_role_arn = module.coredns_irsa.iam_role_arn
 
-      timeouts = {
-        create = "25m"
-        delete = "10m"
-      }
-    }
+    #   timeouts = {
+    #     create = "25m"
+    #     delete = "10m"
+    #   }
+    # }
     vpc-cni = {
       most_recent = true
       service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
@@ -244,24 +244,24 @@ module "kube_proxy_irsa" {
 }
 
 
-module "coredns_irsa" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  role_name         = "${var.cluster_name}-coredns-irsa"
+# module "coredns_irsa" {
+#   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+#   role_name         = "${var.cluster_name}-coredns-irsa"
 
 
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks_cluster.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:coredns-sa"]
-    }
-  }
+#   oidc_providers = {
+#     main = {
+#       provider_arn               = module.eks_cluster.oidc_provider_arn
+#       namespace_service_accounts = ["kube-system:coredns-sa"]
+#     }
+#   }
 
-  role_policy_arns = {
-    CoreDNS_Policy = "arn:aws:iam::aws:policy/AmazonEKS_CoreDNS_Policy"
-  } 
+#   role_policy_arns = {
+#     CoreDNS_Policy = "arn:aws:iam::aws:policy/AmazonEKS_CoreDNS_Policy"
+#   } 
 
-  tags = var.common_tags
-}
+#   tags = var.common_tags
+# }
 
 
 
