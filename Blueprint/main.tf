@@ -140,10 +140,10 @@ module "eks_blueprints_addons" {
     #     delete = "10m"
     #   }
     # }
-    vpc-cni = {
-      most_recent = true
-      # service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-    }
+    # vpc-cni = {
+    #   most_recent = true
+     
+    # }
     # kube-proxy = {
     #   most_recent              = true
     #   service_account_role_arn = module.kube_proxy_irsa.iam_role_arn
