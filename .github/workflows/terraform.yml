@@ -69,15 +69,11 @@ jobs:
           terraform plan 
 
       - name: Terraform Apply (for dev and staging)
-        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
+        if: inputs.action == 'apply' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')
         run: |
           cd ${{ env.env_path }}
           terraform apply -auto-approve 
-      - name: Terraform Destroy (for dev and staging)
-        if: inputs.action == 'destroy' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')
-        run: |
-          cd ${{ env.env_path }}
-          terraform destroy -auto-approve
+      
 
   # Separate job for prod, requiring manual approval
   deploy-prod:
