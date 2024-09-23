@@ -221,7 +221,7 @@ module "vpc_cni_irsa" {
   }
     
 
-  tags = var.tags
+  tags = var.common_tags
 }
 
 module "kube_proxy_irsa" {
@@ -240,7 +240,7 @@ module "kube_proxy_irsa" {
     Kube_Proxy_Policy = "arn:aws:iam::aws:policy/AmazonEKS_KubeProxy_Policy"
   } 
 
-  tags = var.tags
+  tags = var.common_tags
 }
 
 
@@ -260,7 +260,7 @@ module "coredns_irsa" {
     CoreDNS_Policy = "arn:aws:iam::aws:policy/AmazonEKS_CoreDNS_Policy"
   } 
 
-  tags = var.tags
+  tags = var.common_tags
 }
 
 
