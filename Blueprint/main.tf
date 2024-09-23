@@ -46,7 +46,7 @@ module "myapp_vpc" {
   private_subnet_tags    = var.private_subnet_tags
 }
 
-
+#
 # module "public_bastion_sg" {
 #   depends_on  = [module.myapp_vpc]
 #   source      = "../modules/security_group"
