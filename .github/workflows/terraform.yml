@@ -1,11 +1,21 @@
 name: Terraform Deploy
 
 on:
+  workflow_dispatch:  # Manually triggered workflow
+    inputs:
+      action:
+        description: 'Choose action (apply/destroy)'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
   push:
     branches:
       - dev
       - staging
-      - main
+      - prod
     paths-ignore:
       - '.github/workflows/**'
 
@@ -37,31 +47,53 @@ jobs:
         run: |
           if [[ "${{ github.ref_name }}" == "dev" ]]; then
             echo "env_path=environment/dev/" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "stage" ]]; then
-            echo "env_path=environment/stage/" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "main" ]]; then
+          elif [[ "${{ github.ref_name }}" == "staging" ]]; then
+            echo "env_path=environment/staging/" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "prod" ]]; then
             echo "env_path=environment/prod/" >> $GITHUB_ENV
           else
             echo "Unknown branch"
             exit 1
           fi
-        
+
       - name: Initialize Terraform
         run: |
-            echo "Environment path is: ${{ env.env_path }}"
-            cd ${{ env.env_path }}
-            ls -la 
-            terraform init 
+          echo "Environment path is: ${{ env.env_path }}"
+          cd ${{ env.env_path }}
+          ls -la
+          terraform init -backend-config="bucket=my-iac-states" -backend-config="key=${{ github.ref_name }}/terraform.tfstate"
 
       - name: Terraform Plan
         run: |
           cd ${{ env.env_path }}
-          terraform plan 
+          terraform plan -var-file=${{ github.ref_name }}.tfvars
 
-      - name: Terraform Apply
-        if: github.ref == 'main' || github.ref == 'stage'
+      - name: Terraform Apply (for dev and staging)
+        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
         run: |
-            cd ${{ env.env_path }}
-            terraform apply 
-    
+          cd ${{ env.env_path }}
+          terraform apply -auto-approve -var-file=${{ github.ref_name }}.tfvars
 
+      - name: Wait for manual approval (prod)
+        if: github.ref == 'refs/heads/prod' && inputs.action == 'apply'
+        uses: hmarr/auto-approve-action@v1
+        with:
+          approval_required: true
+
+      - name: Terraform Apply (for prod)
+        if: github.ref == 'refs/heads/prod' && inputs.action == 'apply'
+        run: |
+          cd ${{ env.env_path }}
+          terraform apply -auto-approve -var-file=${{ github.ref_name }}.tfvars
+
+      - name: Wait for manual approval for destroy (prod)
+        if: github.ref == 'refs/heads/prod' && inputs.action == 'destroy'
+        uses: hmarr/auto-approve-action@v1
+        with:
+          approval_required: true
+
+      - name: Terraform Destroy (for all environments)
+        if: inputs.action == 'destroy'
+        run: |
+          cd ${{ env.env_path }}
+          terraform destroy -auto-approve 
