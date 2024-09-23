@@ -203,11 +203,18 @@ module "eks_blueprints_addons" {
 
 
 module "vpc_cni_irsa" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
 
-  oidc_provider_arn = module.eks_cluster.oidc_provider_arn
+  # oidc_provider_arn = module.eks_cluster.oidc_provider_arn
   role_name         = "${var.cluster_name}-vpc-cni-irsa"
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks_cluster.oidc_provider_arn
+      
+    }
+  }
 
   role_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
@@ -217,11 +224,16 @@ module "vpc_cni_irsa" {
 }
 
 module "kube_proxy_irsa" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
-  
-  oidc_provider_arn = module.eks_cluster.oidc_provider_arn
   role_name         = "${var.cluster_name}-kube-proxy-irsa"
+  
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks_cluster.oidc_provider_arn
+      
+    }
+  }
 
   role_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEKS_KubeProxy_Policy"
@@ -232,11 +244,16 @@ module "kube_proxy_irsa" {
 
 
 module "coredns_irsa" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-
-
-  oidc_provider_arn = module.eks_cluster.oidc_provider_arn
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   role_name         = "${var.cluster_name}-coredns-irsa"
+
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks_cluster.oidc_provider_arn
+      
+    }
+  }
 
   role_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEKS_CoreDNS_Policy"
