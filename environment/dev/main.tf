@@ -18,7 +18,17 @@ terraform {
       version = "~> 2.11"
     }
   }
+
+  backend "s3" {
+    bucket         = "my-iac-states"
+    key            = "dev/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "dev"
+    # encrypt        = true
+  }
 }
+
+
 
 
 
