@@ -94,7 +94,7 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = module.eks_cluster.oidc_provider_arn
   cluster_version   = module.eks_cluster.cluster_version
 
-  # EKS Managed Add-ons
+  ## EKS Managed Add-ons
   eks_addons = {
     
     coredns = {
