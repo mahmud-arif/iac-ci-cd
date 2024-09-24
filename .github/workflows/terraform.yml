@@ -105,17 +105,10 @@ jobs:
           cd environment/prod
           terraform plan 
 
-      - name: Wait for manual approval for Terraform Apply in Prod
-        uses: peter-evans/slash-command-dispatch@v2  # Manual approval step
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-type: pull-request
-          commands: 'deploy'
-
       - name: Terraform Apply for Prod
         run: |
           cd environment/prod
-          terraform apply -auto-approve 
+          terraform apply 
 
 
 
