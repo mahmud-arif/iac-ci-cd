@@ -106,6 +106,7 @@ jobs:
           terraform plan 
 
       - name: Terraform Apply for Prod
+        if: ${{ github.event.inputs.approval == 'true' }}
         run: |
           cd environment/prod
           terraform apply 
