@@ -1,7 +1,7 @@
-# provider "aws" {
-#   region = "us-east-1"
-#   alias  = "virginia"
-# }
+provider "aws" {
+  region = "us-east-1"
+  alias  = "virginia"
+}
 
 # data "aws_eks_cluster_auth" "this" {
 #   name = module.eks_cluster.cluster_name
