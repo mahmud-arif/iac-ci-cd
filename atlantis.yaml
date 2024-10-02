@@ -1,13 +1,11 @@
 version: 3
 projects:
   - name: staging
-    dir: environment/staging
+    dir: environment/dev
     workspace: default
     autoplan:
       when_modified: ["*.tf", "*.tfvars"]
       enabled: true
-    branches:
-      - dev
   - name: production
     dir: environment/production
     workspace: default
