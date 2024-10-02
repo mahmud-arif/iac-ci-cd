@@ -6,9 +6,14 @@ projects:
     autoplan:
       when_modified: ["*.tf", "*.tfvars"]
       enabled: true
+    branches:
+      - dev
   - name: production
     dir: environment/production
     workspace: default
     autoplan:
       when_modified: ["*.tf", "*.tfvars"]
       enabled: true
+    branches:
+      - main
+      - dev
