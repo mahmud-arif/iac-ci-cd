@@ -1,172 +1,172 @@
-name: Terraform Deploy
+# name: Terraform Deploy
 
-on:
-  workflow_dispatch:
-    inputs:
-      action:
-        description: 'Choose action (apply/destroy)'
-        required: true
-        default: 'apply'
-        type: choice
-        options:
-          - apply
-          - destroy
-  push:
-    branches:
-      - dev
-      - staging
-      - prod
-    paths-ignore:
-      - '.github/workflows/**'
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       action:
+#         description: 'Choose action (apply/destroy)'
+#         required: true
+#         default: 'apply'
+#         type: choice
+#         options:
+#           - apply
+#           - destroy
+#   push:
+#     branches:
+#       - dev
+#       - staging
+#       - prod
+#     paths-ignore:
+#       - '.github/workflows/**'
 
-jobs:
-  terraform:
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')) || (github.event_name == 'workflow_dispatch' && inputs.action == 'apply')
+# jobs:
+#   terraform:
+#     runs-on: ubuntu-latest
+#     if: (github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')) || (github.event_name == 'workflow_dispatch' && inputs.action == 'apply')
 
-    permissions:
-      id-token: write
-      contents: read
+#     permissions:
+#       id-token: write
+#       contents: read
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Configure AWS Credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
-          aws-region: us-east-1
+#       - name: Configure AWS Credentials using OIDC
+#         uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
+#           aws-region: us-east-1
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.4
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v2
+#         with:
+#           terraform_version: 1.7.4
 
-      - name: Set environment path
-        id: env_path
-        run: |
-          if [[ "${{ github.ref_name }}" == "dev" ]]; then
-            echo "env_path=environment/dev/" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "staging" ]]; then
-            echo "env_path=environment/staging/" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "prod" ]]; then
-            echo "env_path=environment/prod/" >> $GITHUB_ENV
-          else
-            echo "Unknown branch"
-            exit 1
-          fi
+#       - name: Set environment path
+#         id: env_path
+#         run: |
+#           if [[ "${{ github.ref_name }}" == "dev" ]]; then
+#             echo "env_path=environment/dev/" >> $GITHUB_ENV
+#           elif [[ "${{ github.ref_name }}" == "staging" ]]; then
+#             echo "env_path=environment/staging/" >> $GITHUB_ENV
+#           elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+#             echo "env_path=environment/prod/" >> $GITHUB_ENV
+#           else
+#             echo "Unknown branch"
+#             exit 1
+#           fi
 
-      - name: Initialize Terraform
-        run: |
-          echo "Environment path is: ${{ env.env_path }}"
-          cd ${{ env.env_path }}
-          ls -la
-          terraform init -backend-config="bucket=my-iac-states" -backend-config="key=${{ github.ref_name }}/terraform.tfstate"
+#       - name: Initialize Terraform
+#         run: |
+#           echo "Environment path is: ${{ env.env_path }}"
+#           cd ${{ env.env_path }}
+#           ls -la
+#           terraform init -backend-config="bucket=my-iac-states" -backend-config="key=${{ github.ref_name }}/terraform.tfstate"
 
-      - name: Terraform Plan
-        run: |
-          cd ${{ env.env_path }}
-          terraform plan 
+#       - name: Terraform Plan
+#         run: |
+#           cd ${{ env.env_path }}
+#           terraform plan 
 
-      - name: Terraform Apply (for dev and staging)
-        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
-        run: |
-          cd ${{ env.env_path }}
-          terraform apply -auto-approve 
+#       - name: Terraform Apply (for dev and staging)
+#         if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
+#         run: |
+#           cd ${{ env.env_path }}
+#           terraform apply -auto-approve 
       
 
-  # Separate job for prod, requiring manual approval
-  deploy-prod:
-    runs-on: ubuntu-latest
-    environment:
-      name: prod  # This enables manual approval for the 'prod' environment
-    if: github.ref == 'refs/heads/prod'
+#   # Separate job for prod, requiring manual approval
+#   deploy-prod:
+#     runs-on: ubuntu-latest
+#     environment:
+#       name: prod  # This enables manual approval for the 'prod' environment
+#     if: github.ref == 'refs/heads/prod'
 
-    permissions:
-      id-token: write
-      contents: read
+#     permissions:
+#       id-token: write
+#       contents: read
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Configure AWS Credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
-          aws-region: us-east-1
+#       - name: Configure AWS Credentials using OIDC
+#         uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
+#           aws-region: us-east-1
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.4
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v2
+#         with:
+#           terraform_version: 1.7.4
 
-      - name: Initialize Terraform for Prod
-        run: |
-          cd environment/prod
-          terraform init -backend-config="bucket=my-iac-states" -backend-config="key=prod/terraform.tfstate"
-      - name: Terraform Plan
-        run: |
-          cd environment/prod
-          terraform plan 
+#       - name: Initialize Terraform for Prod
+#         run: |
+#           cd environment/prod
+#           terraform init -backend-config="bucket=my-iac-states" -backend-config="key=prod/terraform.tfstate"
+#       - name: Terraform Plan
+#         run: |
+#           cd environment/prod
+#           terraform plan 
 
-      - name: Terraform Apply for Prod
-        if: inputs.action == 'apply'
-        run: |
-          cd environment/prod
-          terraform apply -auto-approve 
+#       - name: Terraform Apply for Prod
+#         if: inputs.action == 'apply'
+#         run: |
+#           cd environment/prod
+#           terraform apply -auto-approve 
 
-      - name: Terraform Destroy for Prod
-        if: inputs.action == 'destroy'
-        run: |
-          cd environment/prod
-          terraform destroy -auto-approve 
+#       - name: Terraform Destroy for Prod
+#         if: inputs.action == 'destroy'
+#         run: |
+#           cd environment/prod
+#           terraform destroy -auto-approve 
 
-  # Destroy logic for dev and staging
-  destroy-dev-staging:
-    runs-on: ubuntu-latest
-    if: inputs.action == 'destroy' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')
+#   # Destroy logic for dev and staging
+#   destroy-dev-staging:
+#     runs-on: ubuntu-latest
+#     if: inputs.action == 'destroy' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging')
 
-    permissions:
-      id-token: write
-      contents: read
+#     permissions:
+#       id-token: write
+#       contents: read
       
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Set environment path
-        id: env_path
-        run: |
-          if [[ "${{ github.ref_name }}" == "dev" ]]; then
-            echo "env_path=environment/dev/" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "staging" ]]; then
-            echo "env_path=environment/staging/" >> $GITHUB_ENV
-          else
-            echo "Unknown branch"
-            exit 1
-          fi
+#       - name: Set environment path
+#         id: env_path
+#         run: |
+#           if [[ "${{ github.ref_name }}" == "dev" ]]; then
+#             echo "env_path=environment/dev/" >> $GITHUB_ENV
+#           elif [[ "${{ github.ref_name }}" == "staging" ]]; then
+#             echo "env_path=environment/staging/" >> $GITHUB_ENV
+#           else
+#             echo "Unknown branch"
+#             exit 1
+#           fi
   
 
-      - name: Configure AWS Credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
-          aws-region: us-east-1
+#       - name: Configure AWS Credentials using OIDC
+#         uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           role-to-assume: arn:aws:iam::058264357476:role/iac-ci-cd-2
+#           aws-region: us-east-1
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.4
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v2
+#         with:
+#           terraform_version: 1.7.4
 
-      - name: Initialize Terraform for Dev/Staging
-        run: |
-          cd ${{ env.env_path }}
-          terraform init -backend-config="bucket=my-iac-states" -backend-config="key=${{ github.ref_name }}/terraform.tfstate"
+#       - name: Initialize Terraform for Dev/Staging
+#         run: |
+#           cd ${{ env.env_path }}
+#           terraform init -backend-config="bucket=my-iac-states" -backend-config="key=${{ github.ref_name }}/terraform.tfstate"
 
-      - name: Terraform Destroy for Dev/Staging
-        run: |
-          cd ${{ env.env_path }}
-          terraform destroy -auto-approve 
+#       - name: Terraform Destroy for Dev/Staging
+#         run: |
+#           cd ${{ env.env_path }}
+#           terraform destroy -auto-approve 
