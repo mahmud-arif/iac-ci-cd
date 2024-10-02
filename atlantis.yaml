@@ -6,7 +6,7 @@ projects:
     autoplan:
       when_modified: ["*.tf", "*.tfvars"]
       enabled: true
-    extra_args: ["-backend-config=bucket=my-iac-states", "-backend-config=key=dev/terraform.tfstate"]
+    
   
   # - name: production
   #   dir: environment/production
