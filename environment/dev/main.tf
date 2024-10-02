@@ -43,7 +43,7 @@ provider "aws" {
 locals {
   project_name = "kartat"
   # key_name     = "terraform-iqdx"
-  environment = "devv"
+  environment = "dev"
   common_tags = {
     environment = local.environment
     Name        = local.project_name
