@@ -1,15 +1,18 @@
 version: 3
 projects:
-  - name: staging
+  - name: dev
     dir: environment/dev
     workspace: default
     autoplan:
       when_modified: ["*.tf", "*.tfvars"]
       enabled: true
-  - name: production
-    dir: environment/production
-    workspace: default
-    autoplan:
-      when_modified: ["*.tf", "*.tfvars"]
-      enabled: true
+    pre_workflow:
+     - run: terraform init -backend-config="bucket=my-iac-states" -backend-config="key=dev/terraform.tfstate"
+  
+  # - name: production
+  #   dir: environment/production
+  #   workspace: default
+  #   autoplan:
+  #     when_modified: ["*.tf", "*.tfvars"]
+  #     enabled: true
 
