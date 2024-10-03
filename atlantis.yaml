@@ -14,7 +14,12 @@ workflows:
       steps:
         - init:
             extra_args: ["-backend-config=bucket=my-iac-states", "-backend-config=key=dev/terraform.tfstate"]
-        - plan
+        - plan:
+            extra_args:
+            - -compact-warnings
+    apply_requirements:
+      - approved    # Requires pull request approval by a reviewer before applying changes
+      - mergeable 
     apply:
       steps:
         - apply
