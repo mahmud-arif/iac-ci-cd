@@ -66,59 +66,59 @@ module "eks_cluster" {
 
 }
 
-module "eks_auth" {
-  source = "aidanmelen/eks-auth/aws"
-  eks    = module.eks_cluster
+# module "eks_auth" {
+#   source = "aidanmelen/eks-auth/aws"
+#   eks    = module.eks_cluster
 
-  map_roles = [
-    {
-      rolearn  = "arn:aws:iam::058264357476:role/AdministratorAccess-Role"
-      username = "devopsadmin"
-      groups   = ["system:masters"]
-    }
-  ]
+#   map_roles = [
+#     {
+#       rolearn  = "arn:aws:iam::058264357476:role/AdministratorAccess-Role"
+#       username = "devopsadmin"
+#       groups   = ["system:masters"]
+#     }
+#   ]
 
-}
-
-
+# }
 
 
 
 
-module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "1.16.3"
 
-  cluster_name      = module.eks_cluster.cluster_name
-  cluster_endpoint  = module.eks_cluster.cluster_endpoint
-  oidc_provider_arn = module.eks_cluster.oidc_provider_arn
-  cluster_version   = module.eks_cluster.cluster_version
 
-  # EKS Managed Add-ons
-  eks_addons = {
+# module "eks_blueprints_addons" {
+#   source  = "aws-ia/eks-blueprints-addons/aws"
+#   version = "1.16.3"
+
+#   cluster_name      = module.eks_cluster.cluster_name
+#   cluster_endpoint  = module.eks_cluster.cluster_endpoint
+#   oidc_provider_arn = module.eks_cluster.oidc_provider_arn
+#   cluster_version   = module.eks_cluster.cluster_version
+
+#   # EKS Managed Add-ons
+#   eks_addons = {
     
-    coredns = {
-      most_recent = true
+#     coredns = {
+#       most_recent = true
       
-      timeouts = {
-        create = "25m"
-        delete = "10m"
-      }
-    }
-    vpc-cni = {
-      most_recent = true
+#       timeouts = {
+#         create = "25m"
+#         delete = "10m"
+#       }
+#     }
+#     vpc-cni = {
+#       most_recent = true
      
-    }
-    kube-proxy = {
-      most_recent              = true
+#     }
+#     kube-proxy = {
+#       most_recent              = true
       
-    } 
-  }
-   depends_on = [
-    module.eks_cluster,
-    module.eks_cluster.eks_managed_node_groups
-  ]
-}
+#     } 
+#   }
+#    depends_on = [
+#     module.eks_cluster,
+#     module.eks_cluster.eks_managed_node_groups
+#   ]
+# }
 
 
 
