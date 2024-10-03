@@ -7,6 +7,9 @@ projects:
       when_modified: ["*.tf", "*.tfvars"]
       enabled: true
     workflow: custom
+    apply_requirements:
+      - approved   # Require PR approval before applying
+      - mergeable  # Ensure PR is mergeable before applying
 
 workflows:
   custom:
@@ -17,12 +20,10 @@ workflows:
         - plan:
             extra_args:
             - -compact-warnings
-    # apply_requirements:
-    #   - approved    # Requires pull request approval by a reviewer before applying changes
-    #   - mergeable 
     apply:
       steps:
         - apply
+
   
   # - name: production
   #   dir: environment/production
