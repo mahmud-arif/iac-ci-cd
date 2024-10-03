@@ -69,7 +69,7 @@ module "eks_cluster" {
 module "eks_auth" {
   source = "aidanmelen/eks-auth/aws"
   eks    = module.eks_cluster
-
+### user
   map_roles = [
     {
       rolearn  = "arn:aws:iam::058264357476:role/AdministratorAccess-Role"
