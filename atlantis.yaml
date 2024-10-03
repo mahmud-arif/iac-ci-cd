@@ -17,9 +17,9 @@ workflows:
         - plan:
             extra_args:
             - -compact-warnings
-    apply_requirements:
-      - approved    # Requires pull request approval by a reviewer before applying changes
-      - mergeable 
+    # apply_requirements:
+    #   - approved    # Requires pull request approval by a reviewer before applying changes
+    #   - mergeable 
     apply:
       steps:
         - apply
