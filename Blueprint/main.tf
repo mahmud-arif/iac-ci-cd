@@ -63,7 +63,7 @@ module "eks_cluster" {
 
 
   eks_managed_node_groups = var.eks_managed_node_groups
-
+ #llkdjf
 }
 
 # module "eks_auth" {
