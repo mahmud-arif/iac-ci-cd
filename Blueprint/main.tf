@@ -27,7 +27,7 @@ data "aws_caller_identity" "current" {}
 # data "aws_ecrpublic_authorization_token" "token" {
 #   provider = aws.virginia
 # }
-
+## vpc 
 module "myapp_vpc" {
   source          = "../modules/vpc"
   name            = "${var.environment}-${var.vpc_name}"
