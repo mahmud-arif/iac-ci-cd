@@ -69,7 +69,7 @@ data "aws_ami" "ubuntu" {
 
 data "aws_availability_zones" "available" {}
 
-#dkfjkd
+#dkf
 
 module "dev" {
   environment  = local.environment
