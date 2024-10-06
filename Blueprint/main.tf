@@ -28,7 +28,7 @@ data "aws_caller_identity" "current" {}
 #   provider = aws.virginia
 # }
 
-## comment from dovops
+
 
 # module "myapp_vpc" {
 #   source          = "../modules/vpc"
