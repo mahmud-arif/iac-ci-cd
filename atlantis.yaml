@@ -7,9 +7,9 @@ projects:
       when_modified: ["*.tf", "*.tfvars"]
       enabled: true
     workflow: custom
-    # apply_requirements:
-    #   - approved   # Require PR approval before applying
-    #   - mergeable  # Ensure PR is mergeable before applying
+    apply_requirements:
+      - approved   # Require PR approval before applying
+      - mergeable  # Ensure PR is mergeable before applying
 
 workflows:
   custom:
