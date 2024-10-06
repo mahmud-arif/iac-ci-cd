@@ -34,7 +34,10 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-  # profile = "kartat-aws-account"
+  ## profile = "kartat-aws-account"
+  #   assume_role {
+  #   role_arn = "arn:aws:iam::058264357476:role/AdministratorAccess-Role"
+  # }
 }
 
 locals {

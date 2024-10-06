@@ -7,6 +7,9 @@ projects:
       when_modified: ["*.tf", "*.tfvars"]
       enabled: true
     workflow: custom
+    apply_requirements:
+      - approved   # Require PR approval before applying
+      - mergeable  # Ensure PR is mergeable before applying
 
 workflows:
   custom:
@@ -14,10 +17,13 @@ workflows:
       steps:
         - init:
             extra_args: ["-backend-config=bucket=my-iac-states", "-backend-config=key=dev/terraform.tfstate"]
-        - plan
+        - plan:
+            extra_args:
+            - -compact-warnings
     apply:
       steps:
         - apply
+
   
   # - name: production
   #   dir: environment/production
