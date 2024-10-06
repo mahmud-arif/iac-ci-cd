@@ -30,23 +30,23 @@ data "aws_caller_identity" "current" {}
 
 ## comment from dovops
 
-# module "myapp_vpc" {
-#   source          = "../modules/vpc"
-#   name            = "${var.environment}-${var.vpc_name}"
-#   cidr            = var.vpc_cidr_block
-#   private_subnets = var.private_subnet_cidr_blocks
-#   public_subnets  = var.public_subnet_cidr_blocks
-#   azs             = var.vpc_availability_zones
+ module "myapp_vpc" {
+   source          = "../modules/vpc"
+   name            = "${var.environment}-${var.vpc_name}"
+   cidr            = var.vpc_cidr_block
+   private_subnets = var.private_subnet_cidr_blocks
+   public_subnets  = var.public_subnet_cidr_blocks
+   azs             = var.vpc_availability_zones
 
-#   enable_nat_gateway     = var.vpc_enable_nat_gateway
-#   single_nat_gateway     = var.vpc_single_nat_gateway
-#   enable_dns_hostnames   = var.vpc_dns_hostname
-#   one_nat_gateway_per_az = var.one_nat_gateway_per_az
-#   enable_dns_support     = var.enable_dns_support
-#   tags                   = var.common_tags
-#   public_subnet_tags     = var.public_subnet_tags
-#   private_subnet_tags    = var.private_subnet_tags
-# }
+   enable_nat_gateway     = var.vpc_enable_nat_gateway
+   single_nat_gateway     = var.vpc_single_nat_gateway
+   enable_dns_hostnames   = var.vpc_dns_hostname
+   one_nat_gateway_per_az = var.one_nat_gateway_per_az
+   enable_dns_support     = var.enable_dns_support
+   tags                   = var.common_tags
+   public_subnet_tags     = var.public_subnet_tags
+   private_subnet_tags    = var.private_subnet_tags
+ }
 
 
 
