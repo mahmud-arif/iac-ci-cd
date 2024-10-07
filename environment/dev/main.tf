@@ -83,7 +83,7 @@ module "dev" {
   private_subnet_cidr_blocks = ["10.0.1.0/24", "10.0.2.0/24"]
   public_subnet_cidr_blocks  = ["10.0.4.0/24", "10.0.5.0/24"]
   vpc_enable_nat_gateway     = false
-  vpc_single_nat_gateway     = true
+  vpc_single_nat_gateway     = false
   enable_dns_support         = true
   vpc_dns_hostname           = true
   # vpc_tags = {
