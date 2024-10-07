@@ -4,7 +4,7 @@ projects:
     dir: environment/dev
     workspace: default
     autoplan:
-      when_modified: ["*.tf", "*.tfvars"]
+      when_modified: ["*.tf", "*.tfvars", "Blueprint/*.tf"]
       enabled: true
     workflow: custom
     apply_requirements:
