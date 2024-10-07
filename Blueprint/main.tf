@@ -36,7 +36,7 @@ data "aws_caller_identity" "current" {}
 #   public_subnets  = var.public_subnet_cidr_blocks
 #   azs             = var.vpc_availability_zones
 
-## comment from dovops
+## comment from 
 
 #  module "myapp_vpc" {
 #    source          = "../modules/vpc"
