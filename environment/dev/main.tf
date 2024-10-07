@@ -69,7 +69,7 @@ data "aws_ami" "ubuntu" {
 
 data "aws_availability_zones" "available" {}
 
-
+#dkfjdkjfkdj
 
 module "dev" {
   environment  = local.environment
@@ -82,7 +82,7 @@ module "dev" {
   vpc_availability_zones     = slice(data.aws_availability_zones.available.names, 0, 2)
   private_subnet_cidr_blocks = ["10.0.1.0/24", "10.0.2.0/24"]
   public_subnet_cidr_blocks  = ["10.0.4.0/24", "10.0.5.0/24"]
-  vpc_enable_nat_gateway     = true
+  vpc_enable_nat_gateway     = false
   vpc_single_nat_gateway     = true
   enable_dns_support         = true
   vpc_dns_hostname           = true
