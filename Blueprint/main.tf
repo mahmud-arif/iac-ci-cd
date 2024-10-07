@@ -27,6 +27,14 @@ data "aws_caller_identity" "current" {}
 # data "aws_ecrpublic_authorization_token" "token" {
 #   provider = aws.virginia
 # }
+#####
+# module "myapp_vpc" {
+#   source          = "../modules/vpc"
+#   name            = "${var.environment}-${var.vpc_name}"
+#   cidr            = var.vpc_cidr_block
+#   private_subnets = var.private_subnet_cidr_blocks
+#   public_subnets  = var.public_subnet_cidr_blocks
+#   azs             = var.vpc_availability_zones
 
 ## comment from dovops
 
